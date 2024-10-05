@@ -1,12 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+import { UserSchema, ServicesSchema } from "./index.js";
 
 const bookingSchema = new mongoose.Schema({
-    user : {type: Schema.Types.ObjectId, ref: 'User', required: true},
-    service : {type: Schema.Types.ObjectId, ref: 'Services', required: true},
-    package:{
-        name:{type: String, required: true},
-        price:{ type: Number, required: true}
-    },
+    user : {type: mongoose.Schema.Types.ObjectId, ref: UserSchema , required: true},
+    service : {type: mongoose.Schema.Types.ObjectId, ref: ServicesSchema , required: true},
     addOns: [{
         name: {type: String},
         price: {type: Number},
@@ -16,10 +13,11 @@ const bookingSchema = new mongoose.Schema({
     location: {type:String},
     status: {type: String, enum:['upcoming','ongoing','completed'], default: 'upcoming'},
     totalPrice: {type: Number, required: true},
-    paymentStatus: {type: String, enum: ['pending','paid'], default: 'pending'},
+    advance: { type: Number, required: true},
+    paymentStatus: {type: String, enum: ['pending','paid','partial'], default: 'pending'},
     createdAt: {type: Date, default: Date.now}
 });
 
 
 const BookingSchema = mongoose.model('BookingSchema',bookingSchema);
-module.exports = BookingSchema;
+export default BookingSchema;

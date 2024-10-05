@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const auth = (req, res, next) => {
   const accessToken = req.cookies.accessToken;
@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-    req.user = decoded;
+    req.userId = decoded.userId;
     next();
   } catch (error) {
     console.log('Token Error:', error.message);
@@ -17,4 +17,4 @@ const auth = (req, res, next) => {
   }
 };
 
-module.exports = auth;
+export default auth;

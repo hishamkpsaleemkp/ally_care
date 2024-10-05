@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const contactFormSchema = new mongoose.Schema({
     name: {type: String, required: true},
@@ -8,4 +8,4 @@ const contactFormSchema = new mongoose.Schema({
 });
 
 const ContactFormSchema = mongoose.model('ContactFormSchema', contactFormSchema);
-module.exports = ContactFormSchema;
+export default ContactFormSchema;

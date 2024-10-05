@@ -1,19 +1,32 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { UserSchema } from '../models/index.js';
+import { validateMobileNumber, validateEmail, validatePassword } from '../utils/validation.js';
 
 router.post('/register', async (req, res) => {
   try {
-    const { mobileNumber, password, email, addresses } = req.body;
+    const { mobileNumber, password, userName, email, addresses } = req.body;
 
     // Ensure that mobileNumber and password are provided
     if (!mobileNumber || !password) {
       return res.status(400).json({ message: 'Mobile number and password are required' });
     }
 
-    const user = new User({ mobileNumber, password, email, addresses });
+    if (!validateMobileNumber(mobileNumber)) {
+      return res.status(400).json({ message: mobileValid.message });
+    }
+
+    if (!validatePassword(password)) {
+      return res.status(400).json({ message: passwordValid.message });
+    }
+
+    if (!validateEmail(email) && !email) {
+      return res.status(400).json({ message: emailValid.message });
+    }
+
+    const user = new UserSchema({ mobileNumber, password, email, userName, addresses });
     await user.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
@@ -26,7 +39,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { mobileNumber, password } = req.body;
-    const user = await User.findOne({ mobileNumber });
+    const user = await UserSchema.findOne({ mobileNumber });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -68,4 +81,4 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Logged out successfully' });
 });
 
-module.exports = router;
+export default router;
